@@ -1,0 +1,36 @@
+* 命令格式
+
+command  pcode  build_path  pub_path pub_sn
+
+例如运行以下命令
+sh /data/scripts/publish.sh 23 /data/build/31987UQWEQWEQE /data/www/1/2/pc/ PUB_123
+
+* 参数说明
+command 脚本的地址
+pcode 平台编码
+build_path 编译文件路径
+pub_path 发布路径
+pub_sn 发布序列号
+
+* 内容
+发布基础路径为 BASE_WWW_PATH = '/data/www'
+$BASE_WWW_PATH$pub_path
+
+1. 打包旧的文件夹到规定到备份目录. (更合理的存放文件或路径名请看4)
+   $BASE_WWW_PATH$pub_path  (打包此路径, 就是老的nginx静态文件夹路径)
+
+2. 发布, 使用 build_path文件内所有文件替换 $BASE_WWW_PATH$pub_path
+
+3. 保存发布日志 到 (包括调用的参数等)
+    $BASE_WWW_PATH$pub_path/publish.log
+
+4. 实际上为了能够回滚到指定到发布序列号, 在发布到时候就可以把 $sn 保存到 publish.log, 
+   第一步压缩的时候就可以读取这个文件, 拿到序列号
+   
+   
+./publish.sh -c 23 -b /data/build/31987UQWEQWEQE -p /data/www -s PUB_123
+
+【备份及部署脚本】
+/bin/bash /root/publish.sh -c 23 -b /data/build/31987UQWEQWEQE -p /data/www -s PUB_123
+【回滚脚本】
+/bin/bash /root/rollback.sh -s PUB_123
